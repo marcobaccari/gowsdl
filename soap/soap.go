@@ -71,9 +71,12 @@ type SOAPBodyResponse struct {
 	Fault         *SOAPFault `xml:",omitempty"`
 }
 
+// MIMEMultipartAttachment
+// ContentType if is not the result header will be Content-Type : application/octet-stream; name=Name
 type MIMEMultipartAttachment struct {
-	Name string
-	Data []byte
+	Name        string
+	ContentType string
+	Data        []byte
 }
 
 // UnmarshalXML unmarshals SOAPBody xml
@@ -514,7 +517,7 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 	}
 
 	var mmaBoundary string
-	if s.opts.mma{
+	if s.opts.mma {
 		mmaBoundary, err = getMmaHeader(res.Header.Get("Content-Type"))
 		if err != nil {
 			return err

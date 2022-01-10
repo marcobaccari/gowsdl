@@ -57,7 +57,11 @@ func (e *mmaEncoder) Encode(v interface{}) error {
 	// 2. write attachments parts
 	for _, attachment := range e.attachments {
 		attHeader := make(textproto.MIMEHeader)
-		attHeader.Set("Content-Type", fmt.Sprintf("application/octet-stream; name=%s", attachment.Name))
+		if attachment.ContentType != "" {
+			attHeader.Set("Content-Type", attachment.ContentType)
+		} else {
+			attHeader.Set("Content-Type", fmt.Sprintf("application/octet-stream; name=%s", attachment.Name))
+		}
 		attHeader.Set("Content-Transfer-Encoding", "binary")
 		attHeader.Set("Content-ID", fmt.Sprintf("<%s>", attachment.Name))
 		attHeader.Set("Content-Disposition",
